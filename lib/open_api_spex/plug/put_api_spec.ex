@@ -13,13 +13,12 @@ defmodule OpenApiSpex.Plug.PutApiSpec do
 
   @impl Plug
   def init([module: _spec_module] = opts) do
-   opts[:module]
+    opts[:module]
   end
 
   @impl Plug
   def call(conn, spec_module) do
-    {spec, operation_lookup} =
-      fetch_spec(spec_module)
+    {spec, operation_lookup} = fetch_spec(spec_module)
 
     private_data =
       conn
@@ -31,14 +30,17 @@ defmodule OpenApiSpex.Plug.PutApiSpec do
     Plug.Conn.put_private(conn, :open_api_spex, private_data)
   end
 
-  @spec build_spec(module) :: {OpenApiSpex.OpenApi.t, %{String.t => OpenApiSpex.Operation.t}}
+  @spec build_spec(module) ::
+          {OpenApiSpex.OpenApi.t(), %{String.t() => OpenApiSpex.Operation.t()}}
   defp build_spec(mod) do
     spec = mod.spec()
     operation_lookup = build_operation_lookup(spec)
     {spec, operation_lookup}
   end
 
-  @spec build_operation_lookup(OpenApiSpex.OpenApi.t) :: %{String.t => OpenApiSpex.Operation.t}
+  @spec build_operation_lookup(OpenApiSpex.OpenApi.t()) :: %{
+          String.t() => OpenApiSpex.Operation.t()
+        }
   defp build_operation_lookup(spec = %OpenApiSpex.OpenApi{}) do
     spec
     |> Map.get(:paths)
@@ -66,7 +68,9 @@ defmodule OpenApiSpex.Plug.PutApiSpec do
 
           defp term_not_found do
             if Application.get_env(:open_api_spex, :persistent_term_warn, false) do
-              IO.warn("Warning: the OpenApiSpec spec was deleted from persistent terms. This can cause serious issues.")
+              IO.warn(
+                "Warning: the OpenApiSpec spec was deleted from persistent terms. This can cause serious issues."
+              )
             else
               Application.put_env(:open_api_spex, :persistent_term, true)
             end
@@ -80,7 +84,9 @@ defmodule OpenApiSpex.Plug.PutApiSpec do
                 spec = build_spec(spec_module)
                 Application.put_env(:open_api_spex, spec_module, spec)
                 spec
-              spec -> spec
+
+              spec ->
+                spec
             end
           end
         end

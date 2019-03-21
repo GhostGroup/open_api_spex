@@ -25,6 +25,7 @@ defmodule PlugApp.UserHandler do
 
     def index(conn, _opts) do
       users = Accounts.list_users()
+
       conn
       |> Plug.Conn.put_resp_header("Content-Type", "application/json")
       |> Plug.Conn.send_resp(200, render(users))
@@ -69,7 +70,8 @@ defmodule PlugApp.UserHandler do
           |> send_resp(404, ~s({"error": "User not found"}))
           |> halt()
 
-        user -> assign(conn, :user, user)
+        user ->
+          assign(conn, :user, user)
       end
     end
 
@@ -100,7 +102,10 @@ defmodule PlugApp.UserHandler do
         summary: "Create user",
         description: "Create a user",
         operationId: "UserHandler.Create",
-        requestBody: request_body("The user attributes", "application/json", Schemas.UserRequest, required: true),
+        requestBody:
+          request_body("The user attributes", "application/json", Schemas.UserRequest,
+            required: true
+          ),
         responses: %{
           201 => response("User", "application/json", Schemas.UserResponse)
         }

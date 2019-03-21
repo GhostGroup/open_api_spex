@@ -3,8 +3,8 @@ defmodule PlugApp.Repo.Migrations.AddUsers do
 
   def change do
     create table(:users) do
-      add :name, :string, null: false
-      add :email, :string, null: false
+      add(:name, :string, null: false)
+      add(:email, :string, null: false)
       timestamps()
     end
   end

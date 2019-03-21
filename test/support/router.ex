@@ -10,11 +10,11 @@ defmodule OpenApiSpexTest.Router do
   end
 
   scope "/api", OpenApiSpexTest do
-    pipe_through :api
-    resources "/users", UserController, only: [:create, :index, :show]
+    pipe_through(:api)
+    resources("/users", UserController, only: [:create, :index, :show])
 
     # Used by ParamsTest
-    resources "/custom_error_users", CustomErrorUserController, only: [:index]
+    resources("/custom_error_users", CustomErrorUserController, only: [:index])
 
     # Used by CastAndValidateTest
     scope "/cast_and_validate_test" do
@@ -23,7 +23,7 @@ defmodule OpenApiSpexTest.Router do
       post "/users", CastAndValidateUserController, :create
       post "/users/:id/contact_info", CastAndValidateUserController, :contact_info
       post "/users/:id/payment_details", CastAndValidateUserController, :payment_details
-      resources "/custom_error_users", CastAndValidate.CustomErrorUserController, only: [:index]
+      resources("/custom_error_users", CastAndValidate.CustomErrorUserController, only: [:index])
     end
 
     get "/users/:id/payment_details", UserController, :payment_details
