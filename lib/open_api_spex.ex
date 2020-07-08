@@ -174,15 +174,7 @@ defmodule OpenApiSpex do
     quote do
       @compile {:report_warnings, false}
       @behaviour OpenApiSpex.Schema
-      @schema struct(
-                OpenApiSpex.Schema,
-                unquote(body)
-                |> Map.delete(:__struct__)
-                |> Map.put(:"x-struct", __MODULE__)
-                |> update_in([:title], fn title ->
-                  title || __MODULE__ |> Module.split() |> List.last()
-                end)
-              )
+      @schema OpenApiSpex.Schema.module_schema(__MODULE__, unquote(body))
 
       def schema, do: @schema
 

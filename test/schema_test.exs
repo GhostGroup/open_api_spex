@@ -59,6 +59,38 @@ defmodule OpenApiSpex.SchemaTest do
     end
   end
 
+  describe "module_schema/2" do
+    test "defines a Schema struct for the given set of attributes" do
+      schema = Schema.module_schema(TestSchemaModule, %{type: :string})
+      assert %Schema{type: :string} = schema
+    end
+
+    test "populates x-struct" do
+      schema = Schema.module_schema(TestSchemaModule, %{type: :string})
+      assert schema."x-struct" == TestSchemaModule
+    end
+
+    test "allows x-struct to be overriden" do
+      schema = Schema.module_schema(TestSchemaModule, %{type: :string, "x-struct": nil})
+      assert schema."x-struct" == nil
+    end
+
+    test "populates title" do
+      schema = Schema.module_schema(MyApp.TestSchemaModule, %{type: :string})
+      assert schema.title == "TestSchemaModule"
+    end
+
+    test "can take a Schema struct" do
+      schema = Schema.module_schema(TestSchemaModule, %Schema{type: :string})
+      assert %Schema{type: :string} = schema
+    end
+
+    test "can take a Keyword list" do
+      schema = Schema.module_schema(TestSchemaModule, type: :string)
+      assert %Schema{type: :string} = schema
+    end
+  end
+
   describe "cast/3" do
     test "cast request schema" do
       api_spec = ApiSpec.spec()

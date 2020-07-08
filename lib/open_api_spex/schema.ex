@@ -184,6 +184,20 @@ defmodule OpenApiSpex.Schema do
     :"x-struct"
   ]
 
+  @doc """
+  Build a schema struct to be part of a module-based schema.
+  """
+  def module_schema(module, schema_attrs) do
+    prepared_attrs =
+      schema_attrs
+      |> strip_maybe_struct()
+      |> Map.new()
+      |> Map.put_new(:"x-struct", module)
+      |> Map.put_new(:title, module |> Module.split() |> List.last())
+
+    struct(OpenApiSpex.Schema, prepared_attrs)
+  end
+
   @typedoc """
   [Schema Object](https://swagger.io/specification/#schemaObject)
 
@@ -870,4 +884,7 @@ defmodule OpenApiSpex.Schema do
   defp default(schema_module) when is_atom(schema_module), do: schema_module.schema().default
   defp default(%{default: default}), do: default
   defp default(%Reference{}), do: nil
+
+  defp strip_maybe_struct(%{__struct__: _} = struct), do: Map.from_struct(struct)
+  defp strip_maybe_struct(value), do: value
 end
