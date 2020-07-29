@@ -2,7 +2,7 @@ defmodule OpenApiSpexTest.UserControllerAnnotated do
   @moduledoc tags: ["User"]
 
   use OpenApiSpex.Controller
-  alias OpenApiSpex.Header
+  alias OpenApiSpex.{Header, Schema}
   alias OpenApiSpexTest.Schemas.{NotFound, Unauthorized, User}
 
   @doc """
@@ -13,7 +13,9 @@ defmodule OpenApiSpexTest.UserControllerAnnotated do
   @doc parameters: [
          id: [in: :path, type: :string, required: true]
        ]
-  @doc request_body: {"Request body to update a User", "application/json", User, required: true}
+  @doc request_body:
+         {"Request body to update a User", "application/json",
+          %Schema{type: :object, properties: %{data: User}}, required: true}
   @doc responses: [
          ok: {
            "User response",

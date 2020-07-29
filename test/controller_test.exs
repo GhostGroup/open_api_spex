@@ -53,7 +53,11 @@ defmodule OpenApiSpex.ControllerTest do
       assert op.requestBody.description == "Request body to update a User"
       assert op.requestBody.required == true
       assert %OpenApiSpex.MediaType{schema: schema} = op.requestBody.content["application/json"]
-      assert schema == OpenApiSpexTest.Schemas.User
+
+      assert schema == %OpenApiSpex.Schema{
+               properties: %{data: OpenApiSpexTest.Schemas.User},
+               type: :object
+             }
     end
 
     test "sets the operation_id" do
