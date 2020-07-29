@@ -159,7 +159,46 @@ defmodule OpenApiSpex.SchemaResolverTest do
              %Reference{"$ref": "#/components/schemas/PaymentDetails"}
   end
 
-  test "response schemas do not need to be a module-based schema" do
+  test "object-type response schemas do not need to be a module-based schema" do
+    spec = %OpenApi{
+      info: %Info{
+        title: "Test",
+        version: "1.0.0"
+      },
+      paths: %{
+        "/api/users/{id}" => %PathItem{
+          get: %Operation{
+            responses: %{
+              200 => %Response{
+                description: "Success",
+                content: %{
+                  "application/json" => %MediaType{
+                    schema: %Schema{
+                      type: :object,
+                      properties: %{
+                        data: OpenApiSpexTest.Schemas.User
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    resolved = OpenApiSpex.resolve_schema_modules(spec)
+
+    assert %Schema{} =
+             schema =
+             resolved.paths["/api/users/{id}"].get.responses[200].content["application/json"].schema
+
+    assert schema.type == :object
+    assert %Reference{"$ref": "#/components/schemas/User"} = schema.properties.data
+  end
+
+  test "array-type response schemas do not need to be a module-based schema" do
     spec = %OpenApi{
       info: %Info{
         title: "Test",
