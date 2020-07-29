@@ -1,6 +1,7 @@
 defmodule OpenApiSpex.ControllerTest do
   use ExUnit.Case, async: true
 
+  alias OpenApiSpex.Schema
   alias OpenApiSpex.Controller, as: Subject
 
   import ExUnit.CaptureIO
@@ -58,6 +59,14 @@ defmodule OpenApiSpex.ControllerTest do
                properties: %{data: OpenApiSpexTest.Schemas.User},
                type: :object
              }
+    end
+
+    test "has a response and it does not need to be a module-based schema" do
+      op = @controller.open_api_operation(:update)
+      assert %OpenApiSpex.Response{} = op.responses[200]
+
+      assert %Schema{properties: %{data: OpenApiSpexTest.Schemas.User}, type: :object} =
+               op.responses[200].content["application/json"].schema
     end
 
     test "sets the operation_id" do

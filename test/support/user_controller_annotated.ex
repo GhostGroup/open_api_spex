@@ -20,7 +20,7 @@ defmodule OpenApiSpexTest.UserControllerAnnotated do
          ok: {
            "User response",
            "application/json",
-           User,
+           %Schema{type: :object, properties: %{data: User}},
            headers: %{"token" => %Header{description: "Access token"}}
          },
          unauthorized: Unauthorized.response(),
